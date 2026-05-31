@@ -814,31 +814,8 @@ function buildProducts(parent) {
 
     if (product.target.shelfItem) {
       createShelfProductPackage(product, addPart, group);
-    } else if (product.type === "carton") {
-      addPart("a-box", { position: "0 0 0", width: 0.32, height: 0.48, depth: 0.18, material: `color: ${product.color}; roughness: 0.35`, "data-color": product.color });
-      addPart("a-cone", { position: "0 0.31 0", "radius-bottom": 0.21, "radius-top": 0.03, height: 0.18, "segments-radial": 4, rotation: "0 45 0", material: "color: #dff7ff; roughness: 0.4", "data-color": "#dff7ff" });
-    } else if (product.type === "bread") {
-      addPart("a-sphere", { position: "-0.13 0 0", scale: "0.34 0.18 0.18", material: `color: ${product.color}; roughness: 0.8`, "data-color": product.color });
-      addPart("a-sphere", { position: "0.13 0 0", scale: "0.34 0.18 0.18", material: "color: #f0b867; roughness: 0.8", "data-color": "#f0b867" });
-    } else if (product.type === "coffee") {
-      addPart("a-cylinder", { position: "0 0 0", radius: 0.18, height: 0.46, "segments-radial": 24, material: `color: ${product.color}; roughness: 0.5`, "data-color": product.color });
-      addPart("a-cylinder", { position: "0 0.26 0", radius: 0.18, height: 0.04, "segments-radial": 24, material: "color: #f8fafc; roughness: 0.4", "data-color": "#f8fafc" });
-    } else if (product.type === "apples") {
-      [
-        [-0.18, 0, 0],
-        [0, 0.04, 0.02],
-        [0.18, 0, 0],
-        [-0.08, 0.2, 0],
-        [0.1, 0.2, 0.01]
-      ].forEach(([x, y, z]) => {
-        addPart("a-sphere", { position: `${x} ${y} ${z}`, radius: 0.13, material: `color: ${product.color}; roughness: 0.55`, "data-color": product.color });
-      });
-    } else if (product.type === "shampoo") {
-      addPart("a-box", { position: "0 0 0", width: 0.24, height: 0.52, depth: 0.16, material: `color: ${product.color}; roughness: 0.35`, "data-color": product.color });
-      addPart("a-cylinder", { position: "0 0.31 0", radius: 0.09, height: 0.09, "segments-radial": 16, material: "color: #312e81; roughness: 0.35", "data-color": "#312e81" });
     } else {
-      addPart("a-box", { position: "-0.08 0 0", width: 0.18, height: 0.54, depth: 0.14, material: `color: ${product.color}; roughness: 0.45`, "data-color": product.color });
-      addPart("a-box", { position: "0.11 0 0", width: 0.18, height: 0.48, depth: 0.14, material: "color: #fde68a; roughness: 0.45", "data-color": "#fde68a" });
+      buildProductModel(product, addPart, 0);
     }
 
     if (!product.target.shelfItem) {
@@ -860,22 +837,247 @@ function createShelfProductPackage(product, addPart, group) {
     material: "color: #334155; roughness: 0.55"
   }, group);
 
-  if (product.type === "carton") {
-    addPart("a-box", { position: "0 0 0.02", width: 0.34, height: 0.52, depth: 0.22, material: `color: ${product.color}; roughness: 0.32`, "data-color": product.color });
-    addPart("a-box", { position: "0 0.18 0.145", width: 0.24, height: 0.12, depth: 0.012, material: "color: #f8fafc; roughness: 0.25", "data-color": "#f8fafc" });
-  } else if (product.type === "coffee") {
-    addPart("a-box", { position: "0 0 0.02", width: 0.34, height: 0.44, depth: 0.2, material: `color: ${product.color}; roughness: 0.6`, "data-color": product.color });
-    addPart("a-box", { position: "0 -0.04 0.14", width: 0.24, height: 0.2, depth: 0.012, material: "color: #f5e6c8; roughness: 0.35", "data-color": "#f5e6c8" });
-  } else if (product.type === "shampoo") {
-    addPart("a-box", { position: "0 0 0.02", width: 0.24, height: 0.52, depth: 0.17, material: `color: ${product.color}; roughness: 0.34`, "data-color": product.color });
-    addPart("a-box", { position: "0 0.3 0.02", width: 0.16, height: 0.08, depth: 0.13, material: "color: #312e81; roughness: 0.35", "data-color": "#312e81" });
-  } else {
-    addPart("a-box", { position: "-0.08 0 0.02", width: 0.2, height: 0.5, depth: 0.16, material: `color: ${product.color}; roughness: 0.42`, "data-color": product.color });
-    addPart("a-box", { position: "0.13 -0.02 0.02", width: 0.18, height: 0.44, depth: 0.16, material: "color: #fde68a; roughness: 0.42", "data-color": "#fde68a" });
-  }
+  buildProductModel(product, addPart, 0.02);
 
   make("a-plane", { position: "0 -0.37 0.22", width: 0.62, height: 0.16, material: "color: #f8fafc; roughness: 0.3" }, group);
   make("a-text", { value: product.name, position: "0 -0.385 0.235", align: "center", width: 0.9, color: "#0f172a" }, group);
+}
+
+function buildProductModel(product, addPart, zOff) {
+  switch (product.type) {
+    case "carton":
+      return buildMilkCartonModel(addPart, product.color, zOff);
+    case "bread":
+      return buildBreadLoafModel(addPart, product.color, zOff);
+    case "coffee":
+      return buildCoffeeBagModel(addPart, product.color, zOff);
+    case "apples":
+      return buildAppleClusterModel(addPart, product.color, zOff);
+    case "shampoo":
+      return buildShampooBottleModel(addPart, product.color, zOff);
+    case "pasta":
+    default:
+      return buildPastaBoxModel(addPart, product.color, zOff);
+  }
+}
+
+function buildMilkCartonModel(addPart, color, zOff) {
+  addPart("a-box", {
+    position: `0 -0.04 ${zOff}`,
+    width: 0.26, height: 0.40, depth: 0.20,
+    material: `color: ${color}; roughness: 0.42; metalness: 0.02`,
+    "data-color": color
+  });
+  addPart("a-cone", {
+    position: `0 0.205 ${zOff}`,
+    "radius-bottom": 0.184, "radius-top": 0.025, height: 0.09,
+    "segments-radial": 4, rotation: "0 45 0",
+    material: `color: ${color}; roughness: 0.42`,
+    "data-color": color
+  });
+  addPart("a-box", {
+    position: `0 0.258 ${zOff}`,
+    width: 0.18, height: 0.025, depth: 0.04,
+    material: `color: ${color}; roughness: 0.42`,
+    "data-color": color
+  });
+  addPart("a-plane", {
+    position: `0 -0.05 ${zOff + 0.101}`,
+    width: 0.20, height: 0.22,
+    material: "color: #f8fafc; roughness: 0.3; side: double",
+    "data-color": "#f8fafc"
+  });
+  addPart("a-plane", {
+    position: `0 -0.11 ${zOff + 0.102}`,
+    width: 0.16, height: 0.04,
+    material: `color: ${color}; roughness: 0.4; side: double`,
+    "data-color": color
+  });
+}
+
+function buildBreadLoafModel(addPart, color, zOff) {
+  addPart("a-cylinder", {
+    position: `0 0 ${zOff}`,
+    radius: 0.11, height: 0.36,
+    "segments-radial": 18,
+    rotation: "0 0 90",
+    material: `color: ${color}; roughness: 0.85`,
+    "data-color": color
+  });
+  addPart("a-sphere", {
+    position: `-0.18 0 ${zOff}`,
+    radius: 0.11,
+    "segments-width": 14, "segments-height": 10,
+    material: `color: ${color}; roughness: 0.85`,
+    "data-color": color
+  });
+  addPart("a-sphere", {
+    position: `0.18 0 ${zOff}`,
+    radius: 0.11,
+    "segments-width": 14, "segments-height": 10,
+    material: `color: ${color}; roughness: 0.85`,
+    "data-color": color
+  });
+  [-0.12, 0, 0.12].forEach((px) => {
+    addPart("a-box", {
+      position: `${px} 0.10 ${zOff}`,
+      width: 0.025, height: 0.03, depth: 0.18,
+      rotation: "0 25 0",
+      material: "color: #7c4a1e; roughness: 0.9",
+      "data-color": "#7c4a1e"
+    });
+  });
+}
+
+function buildCoffeeBagModel(addPart, color, zOff) {
+  addPart("a-box", {
+    position: `0 -0.04 ${zOff}`,
+    width: 0.30, height: 0.40, depth: 0.16,
+    material: `color: ${color}; roughness: 0.62`,
+    "data-color": color
+  });
+  addPart("a-box", {
+    position: `0 0.18 ${zOff}`,
+    width: 0.30, height: 0.05, depth: 0.04,
+    material: `color: ${color}; roughness: 0.6`,
+    "data-color": color
+  });
+  addPart("a-box", {
+    position: `0 0.225 ${zOff}`,
+    width: 0.30, height: 0.018, depth: 0.022,
+    material: "color: #2c1a0e; roughness: 0.55",
+    "data-color": "#2c1a0e"
+  });
+  addPart("a-plane", {
+    position: `0 -0.06 ${zOff + 0.081}`,
+    width: 0.24, height: 0.18,
+    material: "color: #f5e6c8; roughness: 0.4; side: double",
+    "data-color": "#f5e6c8"
+  });
+  [-0.05, 0.0, 0.05].forEach((px, i) => {
+    addPart("a-sphere", {
+      position: `${px} ${-0.04 + (i % 2) * 0.02} ${zOff + 0.083}`,
+      radius: 0.022,
+      "segments-width": 10, "segments-height": 8,
+      material: `color: ${color}; roughness: 0.65`,
+      "data-color": color
+    });
+  });
+}
+
+function buildAppleClusterModel(addPart, color, zOff) {
+  const arrangement = [
+    { x: -0.17, y: 0, z: -0.02, scale: 1.0 },
+    { x: 0.0, y: 0.0, z: 0.06, scale: 1.05 },
+    { x: 0.17, y: 0, z: -0.02, scale: 1.0 },
+    { x: -0.09, y: 0.19, z: 0.02, scale: 0.95 },
+    { x: 0.09, y: 0.19, z: 0.02, scale: 0.95 },
+    { x: 0.0, y: 0.34, z: 0.0, scale: 0.9 }
+  ];
+  arrangement.forEach(({ x, y, z, scale }) => {
+    const r = 0.13 * scale;
+    addPart("a-sphere", {
+      position: `${x} ${y} ${z + zOff}`,
+      radius: r,
+      "segments-width": 14, "segments-height": 10,
+      scale: "1 0.92 1",
+      material: `color: ${color}; roughness: 0.45; metalness: 0.05`,
+      "data-color": color
+    });
+    addPart("a-cylinder", {
+      position: `${x} ${y + r * 0.95} ${z + zOff}`,
+      radius: 0.012, height: 0.05,
+      "segments-radial": 8,
+      material: "color: #5a3a1b; roughness: 0.9",
+      "data-color": "#5a3a1b"
+    });
+    addPart("a-plane", {
+      position: `${x + 0.04} ${y + r * 0.95 + 0.01} ${z + zOff}`,
+      width: 0.06, height: 0.035,
+      rotation: "-20 0 35",
+      material: "color: #4ade80; roughness: 0.55; side: double",
+      "data-color": "#4ade80"
+    });
+  });
+}
+
+function buildShampooBottleModel(addPart, color, zOff) {
+  addPart("a-cylinder", {
+    position: `0 -0.08 ${zOff}`,
+    radius: 0.10, height: 0.28,
+    "segments-radial": 18,
+    material: `color: ${color}; roughness: 0.32; metalness: 0.05`,
+    "data-color": color
+  });
+  addPart("a-cone", {
+    position: `0 0.10 ${zOff}`,
+    "radius-bottom": 0.10, "radius-top": 0.055, height: 0.10,
+    "segments-radial": 18,
+    material: `color: ${color}; roughness: 0.32`,
+    "data-color": color
+  });
+  addPart("a-cylinder", {
+    position: `0 0.165 ${zOff}`,
+    radius: 0.038, height: 0.025,
+    "segments-radial": 14,
+    material: "color: #312e81; roughness: 0.4",
+    "data-color": "#312e81"
+  });
+  addPart("a-cylinder", {
+    position: `0 0.215 ${zOff}`,
+    radius: 0.065, height: 0.075,
+    "segments-radial": 18,
+    material: "color: #312e81; roughness: 0.4",
+    "data-color": "#312e81"
+  });
+  addPart("a-plane", {
+    position: `0 -0.08 ${zOff + 0.101}`,
+    width: 0.16, height: 0.18,
+    material: "color: #f8fafc; roughness: 0.3; side: double",
+    "data-color": "#f8fafc"
+  });
+  addPart("a-plane", {
+    position: `0 -0.14 ${zOff + 0.102}`,
+    width: 0.14, height: 0.03,
+    material: `color: ${color}; roughness: 0.4; side: double`,
+    "data-color": color
+  });
+}
+
+function buildPastaBoxModel(addPart, color, zOff) {
+  addPart("a-box", {
+    position: `0 0 ${zOff}`,
+    width: 0.22, height: 0.50, depth: 0.10,
+    material: `color: ${color}; roughness: 0.45`,
+    "data-color": color
+  });
+  addPart("a-plane", {
+    position: `0 0.18 ${zOff + 0.051}`,
+    width: 0.18, height: 0.10,
+    material: "color: #b91c1c; roughness: 0.4; side: double",
+    "data-color": "#b91c1c"
+  });
+  addPart("a-plane", {
+    position: `0 -0.05 ${zOff + 0.051}`,
+    width: 0.16, height: 0.22,
+    material: "color: #fef3c7; roughness: 0.35; side: double",
+    "data-color": "#fef3c7"
+  });
+  [-0.06, -0.03, 0.0, 0.03, 0.06].forEach((px) => {
+    addPart("a-cylinder", {
+      position: `${px} -0.05 ${zOff + 0.052}`,
+      radius: 0.008, height: 0.20,
+      "segments-radial": 8,
+      material: "color: #f59e0b; roughness: 0.6",
+      "data-color": "#f59e0b"
+    });
+  });
+  addPart("a-plane", {
+    position: `0 -0.21 ${zOff + 0.051}`,
+    width: 0.18, height: 0.05,
+    material: "color: #b91c1c; roughness: 0.4; side: double",
+    "data-color": "#b91c1c"
+  });
 }
 
 function buildMenu(panel) {
