@@ -1,28 +1,25 @@
 # CodePen Import ohne 1300-Zeilen-Copy-Paste
 
 Empfohlener Weg: CodePen bleibt nur die kurze HTML-Shell. `script.js` und
-`styles.css` liegen extern, z. B. in GitHub, und werden per CDN geladen.
+`styles.css` liegen extern, z. B. in GitHub Pages, und werden per URL geladen.
 
-## Variante A: GitHub + jsDelivr
+## Variante A: GitHub Pages
 
 1. Lade den Ordner `vr-supermarkt-codepen` in ein GitHub-Repo hoch.
-2. Ersetze in `codepen-external-shell.html` diese Platzhalter:
-   - `USER` durch deinen GitHub-Namen
-   - `REPO` durch den Repo-Namen
-   - `BRANCH` durch `main` oder deinen Branch
+2. Aktiviere GitHub Pages auf `main` und `/ (root)`.
 3. Kopiere nur den Inhalt von `codepen-external-shell.html` in das HTML-Panel.
 4. Lasse CSS- und JS-Panel in CodePen leer.
 
 Beispiel-URLs:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/deinname/deinrepo@main/vr-supermarkt-codepen/styles.css">
-<script src="https://cdn.jsdelivr.net/gh/deinname/deinrepo@main/vr-supermarkt-codepen/script.js"></script>
+<link rel="stylesheet" href="https://fjusi.github.io/vr-supermarkt-codepen/vr-supermarkt-codepen/styles.css">
+<script src="https://fjusi.github.io/vr-supermarkt-codepen/vr-supermarkt-codepen/script.js"></script>
 ```
 
-Wichtig: Nicht `raw.githubusercontent.com` für `<script src>` verwenden. Das kann
-wegen MIME-Type/Browser-Schutz zicken. `cdn.jsdelivr.net/gh/...` ist für diesen
-CodePen-Fall robuster.
+Wichtig: Nicht `raw.githubusercontent.com` fuer `<script src>` verwenden. Das kann
+wegen MIME-Type/Browser-Schutz zicken. GitHub Pages ist fuer diesen CodePen-Fall
+robuster und aktualisiert schneller als ein lang gecachter CDN-Branch-Link.
 
 ## Variante B: Ein zweiter CodePen als Library
 
