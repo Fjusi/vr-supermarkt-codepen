@@ -23,8 +23,8 @@ const PRODUCTS = [
     shelf: "Baeckerei B1",
     color: "#d99b4a",
     type: "bread",
-    target: { x: -2.45, y: 1.03, z: 2.85, yaw: 0, labelYaw: 0 },
-    pickup: { x: -2.45, z: 3.65 },
+    target: { x: -6.03, y: 1.05, z: 3.7, yaw: 90, labelYaw: 90 },
+    pickup: { x: -4.82, z: 3.7 },
     route: [
       { x: 0, z: 6.55 },
       { x: 0, z: 4.05 },
@@ -117,12 +117,12 @@ const BLOCKERS = [
   { name: "produce-karotten", minX: 3.8, maxX: 4.7, minZ: 3.92, maxZ: 4.78 },
   { name: "produce-birnen", minX: 2.5, maxX: 3.4, minZ: 2.92, maxZ: 3.78 },
   { name: "produce-bananen", minX: 3.3, maxX: 4.2, minZ: 2.92, maxZ: 3.78 },
-  { name: "meat-counter", minX: -5.2, maxX: -2.05, minZ: 0.35, maxZ: 1.95 },
-  { name: "bakery-counter", minX: -3.7, maxX: -1.2, minZ: 2.0, maxZ: 3.2 },
+  { name: "meat-counter", minX: -6.55, maxX: -5.28, minZ: -0.1, maxZ: 2.35 },
+  { name: "bakery-counter", minX: -6.55, maxX: -5.28, minZ: 2.58, maxZ: 4.82 },
   { name: "left-shelf-row", minX: -5.35, maxX: -4.25, minZ: -9.8, maxZ: 0.0 },
   { name: "middle-shelf-row", minX: -0.35, maxX: 0.75, minZ: -9.8, maxZ: 0.0 },
   { name: "right-shelf-row", minX: 4.25, maxX: 5.35, minZ: -9.8, maxZ: 0.0 },
-  { name: "basket-stack", minX: -6.45, maxX: -5.72, minZ: 3.82, maxZ: 4.68 },
+  { name: "basket-stack", minX: -5.28, maxX: -4.52, minZ: 4.58, maxZ: 5.35 },
   { name: "cart-front", minX: 5.58, maxX: 6.45, minZ: 4.42, maxZ: 5.35 },
   { name: "cart-back", minX: 5.58, maxX: 6.45, minZ: 3.48, maxZ: 4.42 },
   { name: "promo-left", minX: -6.42, maxX: -5.58, minZ: -11.25, maxZ: -10.35 },
@@ -606,7 +606,7 @@ function updatePayButton() {
 }
 
 function createFillerProps(parent) {
-  createBasketStack(parent, -6.1, 4.25);
+  createBasketStack(parent, -4.9, 4.95);
   createShoppingCart(parent, 6.05, 4.9, -90);
   createShoppingCart(parent, 6.05, 3.95, -90);
   createPromoStand(parent, -6.0, -10.8, "ANGEBOT", "#ef4444");
@@ -718,33 +718,39 @@ function createProduceCrate(parent, x, z, color, label) {
 }
 
 function createMeatCounter(parent) {
-  const counter = make("a-entity", { position: "-3.65 0 1.15", rotation: "0 18 0" }, parent);
-  createOverheadSign(parent, "FLEISCHTHEKE", "-3.65 2.18 1.15", "0 18 0", 2.5, "#991b1b");
-  make("a-box", { position: "0 0.48 0", width: 2.8, height: 0.72, depth: 0.76, material: "color: #e5e7eb; roughness: 0.42" }, counter);
-  make("a-box", { position: "0 0.9 0.05", width: 2.72, height: 0.32, depth: 0.7, material: "color: #bfdbfe; opacity: 0.45; transparent: true; roughness: 0.1" }, counter);
+  const counter = make("a-entity", { position: "-6.02 0 1.1", rotation: "0 90 0" }, parent);
+  createOverheadSign(parent, "FLEISCHTHEKE", "-6.83 2.18 1.1", "0 90 0", 2.5, "#991b1b");
+  make("a-box", { position: "0 0.48 0", width: 2.25, height: 0.72, depth: 0.86, material: "color: #e5e7eb; roughness: 0.42" }, counter);
+  make("a-box", { position: "0 0.9 0.05", width: 2.12, height: 0.32, depth: 0.78, material: "color: #bfdbfe; opacity: 0.45; transparent: true; roughness: 0.1" }, counter);
+  make("a-box", { position: "0 1.23 -0.43", width: 2.28, height: 0.72, depth: 0.08, material: "color: #991b1b; roughness: 0.5" }, counter);
   ["#fca5a5", "#ef4444", "#fb7185", "#fecaca"].forEach((color, i) => {
     make("a-box", {
-      position: `${-0.95 + i * 0.62} 0.77 0.13`,
+      position: `${-0.78 + i * 0.52} 0.77 0.13`,
       width: 0.42,
       height: 0.08,
       depth: 0.32,
       material: `color: ${color}; roughness: 0.7`
     }, counter);
   });
+  make("a-text", { value: "FRISCHE BEDIENUNG", position: "0 1.22 -0.49", rotation: "0 180 0", align: "center", width: 2.3, color: "#fee2e2" }, counter);
 }
 
 function createBakeryArea(parent) {
-  const bakery = make("a-entity", { position: "-2.45 0 2.42" }, parent);
-  createOverheadSign(parent, "BAECKEREI", "-2.45 2.18 2.42", "0 0 0", 2.3, "#92400e");
-  make("a-box", { position: "0 0.55 0.28", width: 2.3, height: 0.72, depth: 0.72, material: "color: #c4a484; roughness: 0.7" }, bakery);
-  make("a-box", { position: "0 0.95 0.32", width: 2.22, height: 0.1, depth: 0.74, material: "color: #7c2d12; roughness: 0.6" }, bakery);
+  const bakery = make("a-entity", { position: "-6.0 0 3.7", rotation: "0 90 0" }, parent);
+  createOverheadSign(parent, "BAECKEREI", "-6.83 2.18 3.7", "0 90 0", 2.2, "#92400e");
+  make("a-box", { position: "0 0.55 0.28", width: 2.05, height: 0.72, depth: 0.78, material: "color: #c4a484; roughness: 0.7" }, bakery);
+  make("a-box", { position: "0 0.95 0.32", width: 1.96, height: 0.1, depth: 0.8, material: "color: #7c2d12; roughness: 0.6" }, bakery);
+  make("a-box", { position: "0 1.36 -0.39", width: 2.05, height: 0.78, depth: 0.1, material: "color: #78350f; roughness: 0.65" }, bakery);
+  make("a-box", { position: "0 1.16 -0.32", width: 1.82, height: 0.04, depth: 0.18, material: "color: #fef3c7; roughness: 0.7" }, bakery);
+  make("a-box", { position: "0 1.42 -0.32", width: 1.82, height: 0.04, depth: 0.18, material: "color: #fef3c7; roughness: 0.7" }, bakery);
   for (let i = 0; i < 8; i += 1) {
     make("a-sphere", {
-      position: `${-0.82 + i * 0.24} 1.1 ${0.21 + (i % 2) * 0.14}`,
+      position: `${-0.76 + i * 0.22} 1.06 ${0.21 + (i % 2) * 0.14}`,
       scale: "0.18 0.08 0.12",
       material: "color: #d99b4a; roughness: 0.8"
     }, bakery);
   }
+  make("a-text", { value: "BROT & BROETCHEN", position: "0 1.4 -0.46", rotation: "0 180 0", align: "center", width: 2.1, color: "#fef3c7" }, bakery);
 }
 
 function createOverheadSign(parent, text, position, rotation, width, color) {
